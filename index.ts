@@ -10,8 +10,8 @@ app.use((req, res, next) => {
 })
 
 app.get('/hello', (req, res) => {
-    // throw Error('asd')
-    res.send({ succes: true });
+    throw Error('asd')
+    // res.send({ succes: true });
 });
 
 app.use('/user', useRouter)
