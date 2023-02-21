@@ -4,8 +4,9 @@ import { BaseController } from "../common/base.controller";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from '../errors/http-error.class';
 import { inject, injectable } from 'inversify';
+import { IUserController } from './users.interface';
 @injectable()
-export class UserController extends BaseController {
+export class UserController extends BaseController implements IUserController{
     constructor(
         @inject(TYPES.Ilogger)
         private LoggerService: LoggerService
