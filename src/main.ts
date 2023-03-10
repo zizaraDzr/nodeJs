@@ -1,5 +1,8 @@
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { App } from './app';
+import { ConfigService } from './config/config.service';
+import { IConfigService } from './config/config.service.interface';
+import { PrismaService } from './database/prisma.service';
 import { IExeptionFilter } from './errors/exeptioin.filter.interface';
 import { ExeptionFilter } from './errors/exeption.filter';
 import { Ilogger } from './logger/logger.interface';
@@ -16,10 +19,12 @@ export interface BootstrapRetur {
 }
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
-	bind<Ilogger>(TYPES.Ilogger).to(LoggerService);
-	bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter);
-	bind<IUserController>(TYPES.UserController).to(UserController);
-	bind<IUserService>(TYPES.UserService).to(UserService);
+	bind<Ilogger>(TYPES.Ilogger).to(LoggerService).inSingletonScope();
+	bind<IExeptionFilter>(TYPES.ExeptionFilter).to(ExeptionFilter).inSingletonScope();
+	bind<IUserController>(TYPES.UserController).to(UserController).inSingletonScope();
+	bind<IUserService>(TYPES.UserService).to(UserService).inSingletonScope();
+	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
+	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind<App>(TYPES.Application).to(App);
 });
 

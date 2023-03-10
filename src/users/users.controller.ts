@@ -1,3 +1,4 @@
+import { ValidateMiddleware } from './../common/validate.middleware';
 import { HTTPError } from './../errors/http-error.class';
 import { UserService } from './users.service';
 import { UserRegisterDto } from './dto/user-register.dto';
@@ -14,11 +15,11 @@ import { IUserService } from './users.service.interface';
 @injectable()
 export class UserController extends BaseController implements IUserController {
 	constructor(
-		@inject(TYPES.Ilogger) private LoggerService: LoggerService,
-		@inject(TYPES.UserService) private UserService: IUserService,
+		@inject(TYPES.Ilogger) private loggerService: Ilogger,
+		@inject(TYPES.UserService) private userService: IUserService,
 	) {
-		super(LoggerService);
-		LoggerService.info('init UserController');
+		super(loggerService);
+		loggerService.info('init UserController');
 
 		this.bindRoutes([
 			{
@@ -30,6 +31,7 @@ export class UserController extends BaseController implements IUserController {
 				method: 'post',
 				path: '/register',
 				func: this.register,
+				middleware: [new ValidateMiddleware(UserRegisterDto)],
 			},
 		]);
 	}
@@ -44,7 +46,7 @@ export class UserController extends BaseController implements IUserController {
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const result = await this.UserService.createUser(body);
+		const result = await this.userService.createUser(body);
 		console.log(result);
 		if (!result) {
 			return next(new HTTPError(422, 'Такой пользователь уже существует'));
