@@ -2,7 +2,7 @@ import { PrismaClient, UserModel } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 import { Ilogger } from '../logger/logger.interface';
 import { TYPES } from '../types';
-
+import 'reflect-metadata';
 @injectable()
 export class PrismaService {
 	client: PrismaClient;

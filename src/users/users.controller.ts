@@ -12,6 +12,7 @@ import { IUserController } from './users.interface';
 import { User } from './user.entity';
 import { Ilogger } from '../logger/logger.interface';
 import { IUserService } from './users.service.interface';
+import 'reflect-metadata';
 @injectable()
 export class UserController extends BaseController implements IUserController {
 	constructor(
@@ -51,6 +52,6 @@ export class UserController extends BaseController implements IUserController {
 		if (!result) {
 			return next(new HTTPError(422, 'Такой пользователь уже существует'));
 		}
-		this.ok(res, result);
+		this.ok(res, { email: result.email, id: result.id });
 	}
 }
