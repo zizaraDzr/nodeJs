@@ -24,22 +24,30 @@ export class UserController extends BaseController implements IUserController {
 
 		this.bindRoutes([
 			{
-				method: 'post',
 				path: '/login',
+				method: 'post',
 				func: this.login,
+				middleware: [new ValidateMiddleware(UserLoginDto)],
 			},
 			{
-				method: 'post',
 				path: '/register',
+				method: 'post',
 				func: this.register,
 				middleware: [new ValidateMiddleware(UserRegisterDto)],
 			},
 		]);
 	}
 
-	login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {
-		console.log(req.body);
-		next(new HTTPError(401, 'Пользователь не найден', 'login'));
+	async login(
+		req: Request<{}, {}, UserLoginDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const result = await this.userService.validateUser(req.body);
+		if (!result) {
+			return next(new HTTPError(401, 'Пользователь не найден', 'login'));
+		}
+		this.ok(res, {});
 	}
 
 	async register(
