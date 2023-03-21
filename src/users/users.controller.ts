@@ -1,3 +1,4 @@
+import { AuthGuard } from './../common/auth.guard';
 import { IConfigService } from './../config/config.service.interface';
 import { ValidateMiddleware } from './../common/validate.middleware';
 import { HTTPError } from './../errors/http-error.class';
@@ -38,6 +39,12 @@ export class UserController extends BaseController implements IUserController {
 				func: this.register,
 				middleware: [new ValidateMiddleware(UserRegisterDto)],
 			},
+			{
+				path: '/info',
+				method: 'get',
+				func: this.info,
+				middleware: [new AuthGuard()],
+			},
 		]);
 	}
 
@@ -66,6 +73,14 @@ export class UserController extends BaseController implements IUserController {
 			return next(new HTTPError(422, 'Такой пользователь уже существует'));
 		}
 		this.ok(res, { email: result.email, id: result.id });
+	}
+	async info(
+		{ user }: Request<{}, {}, UserRegisterDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const userInfo = await this.userService.getUserInfo(user);
+		this.ok(res, { email: userInfo?.email, id: userInfo?.id });
 	}
 
 	private signJwt(email: string, secret: string): Promise<string> {

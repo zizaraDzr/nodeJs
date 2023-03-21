@@ -1,3 +1,4 @@
+import { AuthMiddleware } from './common/auth.middleware';
 import { inject, injectable } from 'inversify';
 import { LoggerService } from './logger/logger.service';
 import express, { Express, Response } from 'express';
@@ -29,6 +30,8 @@ export class App {
 
 	useMiddleware(): void {
 		this.app.use(json());
+		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
+		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	useRoutes(): void {

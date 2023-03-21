@@ -29,6 +29,7 @@ export class UserService implements IUserService {
 		// если нет - создаем
 		return this.usersRepository.create(newUser);
 	}
+
 	async validateUser({ email, password }: UserLoginDto): Promise<boolean> {
 		const exictedUser = await this.usersRepository.find(email);
 		if (!exictedUser) {
@@ -36,5 +37,9 @@ export class UserService implements IUserService {
 		}
 		const newUser = new User(exictedUser.email, exictedUser.name, exictedUser.password);
 		return newUser.comparePassword(password);
+	}
+
+	async getUserInfo(email: string): Promise<UserModel | null> {
+		return this.usersRepository.find(email);
 	}
 }
